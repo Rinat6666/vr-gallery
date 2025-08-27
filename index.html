@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Simple VR Gallery</title>
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <style>
+      html, body { margin: 0; padding: 0; overflow: hidden; height: 100%; }
+    </style>
+  </head>
+  <body>
+    <a-scene>
+      <!-- Камера -->
+      <a-entity position="0 1.6 4">
+        <a-camera wasd-controls look-controls></a-camera>
+      </a-entity>
+
+      <!-- Пол -->
+      <a-plane rotation="-90 0 0" width="30" height="30" color="#ccc"></a-plane>
+
+      <!-- Галерея с изображениями -->
+      <a-assets>
+        <img id="img1" src="https://kinoplan24.ru/uploads/custom_pages/2921/2025/8/27/embedded/f635a5ec6aebc5c8712a506f2d1e43ea.jpg">
+      </a-assets>
+
+      <a-plane src="#img1" position="0 2 -3" width="4" height="2.5"></a-plane>
+
+      <!-- Свет -->
+      <a-entity light="type: ambient; color: #fff"></a-entity>
+    </a-scene>
+  </body>
+</html>
