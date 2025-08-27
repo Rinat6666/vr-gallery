@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>VR Tour</title>
+    <title>VR Tour – Scene 1</title>
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <style>
       html, body { margin: 0; height: 100%; overflow: hidden; }
@@ -13,36 +13,23 @@
       <!-- Камера -->
       <a-entity camera look-controls position="0 1.6 0"></a-entity>
 
-      <!-- Панорама -->
-      <a-sky id="sky" src="1.jpeg" rotation="0 -90 0"></a-sky>
+      <!-- Панорамное изображение -->
+      <a-sky src="1.jpeg" rotation="0 -90 0"></a-sky>
 
-      <!-- Точка перехода -->
-      <a-entity id="hotspot1"
-                geometry="primitive: circle; radius: 0.3"
-                material="color: red; opacity: 0.8"
-                position="2 1.6 -3"
-                look-at="[camera]"
-                class="clickable"
-                event-set__enter="_event: mouseenter; scale: 1.2 1.2 1.2"
-                event-set__leave="_event: mouseleave; scale: 1 1 1">
-      </a-entity>
+      <!-- Точка (например, информационная) -->
+      <a-entity
+        geometry="primitive: circle; radius: 0.3"
+        material="color: red; opacity: 0.8"
+        position="2 1.6 -3"
+        look-at="[camera]"
+        class="clickable"
+        event-set__enter="_event: mouseenter; scale: 1.2 1.2 1.2"
+        event-set__leave="_event: mouseleave; scale: 1 1 1"
+        onclick="alert('Это точка перехода или инфо!')"
+      ></a-entity>
 
       <!-- Свет -->
       <a-entity light="type: ambient; color: #fff"></a-entity>
     </a-scene>
-
-    <script>
-      const sky = document.querySelector('#sky');
-      const hotspot = document.querySelector('#hotspot1');
-
-      hotspot.addEventListener('click', () => {
-        // Меняем изображение
-        if (sky.getAttribute('src') === '1.jpeg') {
-          sky.setAttribute('src', '2.jpeg');
-        } else {
-          sky.setAttribute('src', '1.jpeg');
-        }
-      });
-    </script>
   </body>
 </html>
