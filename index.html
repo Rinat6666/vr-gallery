@@ -10,13 +10,18 @@
   </head>
   <body>
     <a-scene>
+      <!-- Загрузка ассета отдельно -->
+      <a-assets>
+        <img id="panorama" src="1.jpeg" crossorigin="anonymous" response-type="arraybuffer">
+      </a-assets>
+
       <!-- Камера -->
       <a-entity camera look-controls position="0 1.6 0"></a-entity>
 
       <!-- Панорамное изображение -->
-      <a-sky src="1.jpeg" rotation="0 -90 0"></a-sky>
+      <a-sky src="#panorama" rotation="0 -90 0"></a-sky>
 
-      <!-- Точка (например, информационная) -->
+      <!-- Точка перехода -->
       <a-entity
         geometry="primitive: circle; radius: 0.3"
         material="color: red; opacity: 0.8"
