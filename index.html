@@ -2,36 +2,47 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Simple VR Gallery</title>
+    <title>VR Tour</title>
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <style>
-      html, body { margin: 0; padding: 0; overflow: hidden; height: 100%; }
+      html, body { margin: 0; height: 100%; overflow: hidden; }
     </style>
   </head>
   <body>
     <a-scene>
       <!-- Камера -->
-      <a-entity position="0 1.6 4">
-        <a-camera wasd-controls look-controls></a-camera>
+      <a-entity camera look-controls position="0 1.6 0"></a-entity>
+
+      <!-- Панорама -->
+      <a-sky id="sky" src="1.jpeg" rotation="0 -90 0"></a-sky>
+
+      <!-- Точка перехода -->
+      <a-entity id="hotspot1"
+                geometry="primitive: circle; radius: 0.3"
+                material="color: red; opacity: 0.8"
+                position="2 1.6 -3"
+                look-at="[camera]"
+                class="clickable"
+                event-set__enter="_event: mouseenter; scale: 1.2 1.2 1.2"
+                event-set__leave="_event: mouseleave; scale: 1 1 1">
       </a-entity>
-
-      <!-- Пол -->
-      <a-plane rotation="-90 0 0" width="30" height="30" color="#ccc"></a-plane>
-
-      <!-- Галерея с изображениями -->
-      <a-assets>
-        <img id="img1" src="https://raw.githubusercontent.com/Rinat6666/vr-gallery/main/1.jpeg">
-        <img id="img2" src="https://raw.githubusercontent.com/Rinat6666/vr-gallery/main/2.jpeg">
-      </a-assets>
-
-      <!-- Первое изображение -->
-      <a-plane src="#img1" position="0 2 -3" width="4" height="2.5"></a-plane>
-
-      <!-- Второе изображение (правее первого) -->
-      <a-plane src="#img2" position="5 2 -3" width="4" height="2.5"></a-plane>
 
       <!-- Свет -->
       <a-entity light="type: ambient; color: #fff"></a-entity>
     </a-scene>
+
+    <script>
+      const sky = document.querySelector('#sky');
+      const hotspot = document.querySelector('#hotspot1');
+
+      hotspot.addEventListener('click', () => {
+        // Меняем изображение
+        if (sky.getAttribute('src') === '1.jpeg') {
+          sky.setAttribute('src', '2.jpeg');
+        } else {
+          sky.setAttribute('src', '1.jpeg');
+        }
+      });
+    </script>
   </body>
 </html>
