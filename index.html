@@ -33,7 +33,7 @@
     <!-- Камера -->
     <a-entity id="camera" camera look-controls="touchEnabled: true; magicWindowTrackingEnabled: false" position="0 1.6 0"></a-entity>
 
-    <!-- Панорамы -->
+    <!-- Панорама -->
     <a-sky id="sky" rotation="0 -90 0"></a-sky>
 
     <!-- Контейнер для стрелок -->
@@ -46,20 +46,20 @@
   <script>
     const scenes = {
       'scene4': {
-        image: '4.jpg',
+        image: './4.jpg',
         hotspots: [
           { to: 'scene6', position: '-2 1.6 -3', label: 'К залу 6' },
           { to: 'scene5', position: '-6 1.6 -3', label: 'К залу 5' }
         ]
       },
       'scene6': {
-        image: '6.jpg',
+        image: './6.jpg',
         hotspots: [
           { to: 'scene4', position: '1 1.6 -3', label: 'Назад к залу 4' }
         ]
       },
       'scene5': {
-        image: '6.jpg',
+        image: './5.jpg',
         hotspots: [
           { to: 'scene4', position: '0 1.6 -3', label: 'Назад в зал 4' }
         ]
@@ -83,7 +83,7 @@
 
       scene.hotspots.forEach(hotspot => {
         const arrow = document.createElement('a-image');
-        arrow.setAttribute('src', 'Strelka.png');
+        arrow.setAttribute('src', './Strelka.png');
         arrow.setAttribute('position', hotspot.position);
         arrow.setAttribute('scale', '0.7 0.7 0.7');
         arrow.setAttribute('look-at', '#camera');
@@ -112,4 +112,3 @@
   </script>
 </body>
 </html>
-
