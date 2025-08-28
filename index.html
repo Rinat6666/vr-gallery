@@ -12,6 +12,16 @@
       overflow: hidden;
     }
 
+    /* Стиль для экрана загрузки */
+    .preloader {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: none;
+    }
+
+    /* Панель управления */
     .fullscreen-btn {
       position: absolute;
       top: 10px;
@@ -25,38 +35,65 @@
       font-size: 14px;
     }
 
+    /* Панель информации */
+    .info-panel {
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      display: none;
+    }
+
+    .info-panel h2 {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    .info-panel p {
+      font-size: 14px;
+    }
+
     @keyframes pulse {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.1); }
     }
 
-    /* Меняем системный курсор при наведении на кликабельные объекты */
     a-image.clickable:hover {
       cursor: pointer;
     }
+
   </style>
 </head>
 <body>
   <button class="fullscreen-btn" onclick="toggleFullscreen()">На весь экран</button>
 
-  <a-scene embedded style="width: 90vw; height: 90vh; margin: 5vh auto; border: 5px solid red; cursor: default;">
-    <!-- Камера с курсором (прозрачным) -->
+  <div class="preloader">
+    <svg width="30px" height="30px" class="spin s1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 150">
+      <circle cx="75" cy="75" r="50" stroke-dasharray="169 113" stroke="#ffffff" fill="none" stroke-width="8"></circle>
+    </svg>
+    <svg width="30px" height="30px" class="spin s2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 150 150">
+      <circle cx="75" cy="75" r="50" stroke-dasharray="169 113" stroke="#ffffff" fill="none" stroke-width="8"></circle>
+    </svg>
+  </div>
+
+  <a-scene embedded style="width: 100vw; height: 100vh; cursor: default;">
     <a-entity id="camera" camera look-controls="touchEnabled: true; magicWindowTrackingEnabled: false" position="0 1.6 0">
-      <a-entity 
-        cursor="fuse: false; rayOrigin: mouse" 
-        raycaster="objects: .clickable" 
-        position="0 0 -1" 
-        geometry="primitive: ring; radiusInner: 0.015; radiusOuter: 0.025" 
-        material="color: white; shader: flat; opacity: 0;">
-      </a-entity>
+      <a-entity cursor="fuse: false; rayOrigin: mouse" raycaster="objects: .clickable" position="0 0 -1" geometry="primitive: ring; radiusInner: 0.015; radiusOuter: 0.025" material="color: white; shader: flat; opacity: 0;"></a-entity>
     </a-entity>
 
     <a-sky id="sky" rotation="0 -90 0"></a-sky>
-
     <a-entity id="hotspots"></a-entity>
-
     <a-entity light="type: ambient; color: #fff"></a-entity>
   </a-scene>
+
+  <div class="info-panel">
+    <h2 id="location-title">Buddha Spa</h2>
+    <p id="location-description">Улица Гани Иляева, 37</p>
+    <p><a href="tel:+77022223100" class="link">+77022223100</a></p>
+  </div>
 
   <script>
     const basePath = './';
@@ -66,36 +103,61 @@
         hotspots: [
           { to: 'scene6', position: '-2 1.6 -3', label: 'К залу 6' },
           { to: 'scene5', position: '-6 1.6 -3', label: 'К залу 5' }
-        ]
+        ],
+        info: {
+          title: "Buddha Spa",
+          description: "Улица Гани Иляева, 37",
+          phone: "+77022223100"
+        }
       },
       'scene6': {
         image: basePath + '6.jpg',
         hotspots: [
           { to: 'scene4', position: '1 1.6 -3', label: 'Назад к залу 4' }
-        ]
+        ],
+        info: {
+          title: "Buddha Spa",
+          description: "Улица Гани Иляева, 37",
+          phone: "+77022223100"
+        }
       },
       'scene5': {
-        image: basePath + '6.jpg',
+        image: basePath + '5.jpg',
         hotspots: [
           { to: 'scene4', position: '0 1.6 -3', label: 'Назад в зал 4' }
-        ]
+        ],
+        info: {
+          title: "Buddha Spa",
+          description: "Улица Гани Иляева, 37",
+          phone: "+77022223100"
+        }
       }
     };
 
     let currentScene = 'scene4';
-
     const sky = document.getElementById('sky');
     const hotspotContainer = document.getElementById('hotspots');
+    const infoPanel = document.querySelector('.info-panel');
+    const titleElement = document.getElementById('location-title');
+    const descriptionElement = document.getElementById('location-description');
 
     function loadScene(sceneId) {
       const scene = scenes[sceneId];
       if (!scene) return;
 
+      // Показываем экран загрузки
+      document.querySelector('.preloader').style.display = 'block';
+
+      // Обновляем сцену
       currentScene = sceneId;
       sky.setAttribute('src', scene.image);
+      
+      // Обновляем информацию о месте
+      titleElement.textContent = scene.info.title;
+      descriptionElement.textContent = scene.info.description;
 
+      // Очищаем предыдущие точки и добавляем новые
       hotspotContainer.innerHTML = '';
-
       scene.hotspots.forEach(hotspot => {
         const arrow = document.createElement('a-image');
         arrow.setAttribute('src', basePath + 'Strelka.png');
@@ -122,6 +184,12 @@
 
         hotspotContainer.appendChild(arrow);
       });
+
+      // Скрываем экран загрузки после того, как сцена загружена
+      document.querySelector('.preloader').style.display = 'none';
+
+      // Показываем панель с информацией
+      infoPanel.style.display = 'block';
     }
 
     function toggleFullscreen() {
@@ -137,4 +205,3 @@
   </script>
 </body>
 </html>
-
