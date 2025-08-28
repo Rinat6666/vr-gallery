@@ -59,7 +59,7 @@
         ]
       },
       'scene5': {
-        image: './5.jpg',
+        image: './6.jpg',
         hotspots: [
           { to: 'scene4', position: '0 1.6 -3', label: 'Назад в зал 4' }
         ]
@@ -77,8 +77,6 @@
 
       currentScene = sceneId;
       sky.setAttribute('src', scene.image);
-
-      // Удаляем старые стрелки
       hotspotContainer.innerHTML = '';
 
       scene.hotspots.forEach(hotspot => {
@@ -90,6 +88,24 @@
         arrow.setAttribute('class', 'clickable');
         arrow.setAttribute('title', hotspot.label);
 
+        // 🔄 Пульсация стрелки
+        arrow.setAttribute('animation', `
+          property: scale;
+          dir: alternate;
+          dur: 1000;
+          loop: true;
+          to: 0.8 0.8 0.8
+        `);
+
+        // 🔍 Увеличение при наведении
+        arrow.addEventListener('mouseenter', () => {
+          arrow.setAttribute('scale', '1 1 1');
+        });
+        arrow.addEventListener('mouseleave', () => {
+          arrow.setAttribute('scale', '0.7 0.7 0.7');
+        });
+
+        // 🔁 Переход в другую сцену
         arrow.addEventListener('click', () => {
           loadScene(hotspot.to);
         });
@@ -107,7 +123,7 @@
       }
     }
 
-    // Загружаем первую сцену
+    // 🚀 Стартовая сцена
     loadScene(currentScene);
   </script>
 </body>
