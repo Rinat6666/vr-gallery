@@ -7,7 +7,7 @@
   <style>
     body {
       margin: 0;
-      background: #000;
+      background: #1e3fbc; /* Синий фон */
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -16,9 +16,11 @@
     }
 
     #vr-container {
-      width: 1280px;
-      height: 720px;
-      border: 2px solid #ccc;
+      width: 90vw;  /* ширина 90% экрана */
+      height: 80vh; /* высота 80% экрана */
+      max-width: 1600px;
+      max-height: 900px;
+      border: 4px solid red;
       position: relative;
     }
 
@@ -28,7 +30,7 @@
       right: 10px;
       z-index: 10;
       padding: 10px 15px;
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0, 0, 0, 0.6);
       color: white;
       border: none;
       cursor: pointer;
@@ -85,7 +87,6 @@
       }
     });
 
-    // Меняем надпись при выходе по Esc
     document.addEventListener('fullscreenchange', () => {
       if (!document.fullscreenElement) {
         button.textContent = 'На весь экран';
