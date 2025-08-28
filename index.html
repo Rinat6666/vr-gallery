@@ -1,98 +1,85 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>VR Tour – Scene 1</title>
-  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-  <style>
-    body {
-      margin: 0;
-      background: #1e3fbc; /* Синий фон */
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-    }
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <title>VR Tour – Scene 1</title>
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <style>
+      html, body {
+        margin: 0;
+        height: 100%;
+        background-color: #0033cc; /* синий фон */
+        overflow: hidden;
+      }
 
-    #vr-container {
-      width: 90vw;  /* ширина 90% экрана */
-      height: 80vh; /* высота 80% экрана */
-      max-width: 1600px;
-      max-height: 900px;
-      border: 4px solid red;
-      position: relative;
-    }
+      .fullscreen-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 999;
+        padding: 8px 14px;
+        background: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Кнопка "На весь экран" -->
+    <button class="fullscreen-btn" onclick="toggleFullscreen()">На весь экран</button>
 
-    #fullscreen-btn {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      z-index: 10;
-      padding: 10px 15px;
-      background: rgba(0, 0, 0, 0.6);
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-size: 14px;
-      border-radius: 5px;
-    }
-
-    #fullscreen-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-  </style>
-</head>
-<body>
-  <div id="vr-container">
-    <button id="fullscreen-btn">На весь экран</button>
-
-    <a-scene embedded>
-      <a-assets>
-        <img id="panorama" src="4.jpg" crossorigin="anonymous">
-      </a-assets>
-
+    <a-scene embedded style="width: 90vw; height: 90vh; margin: 5vh auto; border: 5px solid red;">
+      <!-- Камера -->
       <a-entity camera look-controls position="0 1.6 0"></a-entity>
 
-      <a-sky src="#panorama" rotation="0 -90 0"></a-sky>
+      <!-- Панорамное изображение -->
+      <a-sky src="1.jpeg" rotation="0 -90 0"></a-sky>
 
-      <a-entity
-        geometry="primitive: circle; radius: 0.3"
-        material="color: red; opacity: 0.8"
+      <!-- Стрелка 1 (замена красному кругу) -->
+      <a-image
+        src="Strelka.png"
         position="2 1.6 -3"
+        scale="0.7 0.7 0.7"
         look-at="[camera]"
         class="clickable"
-        event-set__enter="_event: mouseenter; scale: 1.2 1.2 1.2"
-        event-set__leave="_event: mouseleave; scale: 1 1 1"
-        onclick="alert('Это точка перехода или инфо!')"
-      ></a-entity>
+        onclick="alert('Точка перехода или инфо 1')"
+      ></a-image>
 
+      <!-- Стрелка 2 -->
+      <a-image
+        src="Strelka.png"
+        position="0 1.6 3"
+        scale="0.7 0.7 0.7"
+        look-at="[camera]"
+        class="clickable"
+        onclick="alert('Точка перехода или инфо 2')"
+      ></a-image>
+
+      <!-- Стрелка 3 -->
+      <a-image
+        src="Strelka.png"
+        position="-2 1.6 -3"
+        scale="0.7 0.7 0.7"
+        look-at="[camera]"
+        class="clickable"
+        onclick="alert('Точка перехода или инфо 3')"
+      ></a-image>
+
+      <!-- Свет -->
       <a-entity light="type: ambient; color: #fff"></a-entity>
     </a-scene>
-  </div>
 
-  <script>
-    const container = document.getElementById('vr-container');
-    const button = document.getElementById('fullscreen-btn');
-
-    button.addEventListener('click', () => {
-      if (!document.fullscreenElement) {
-        container.requestFullscreen().then(() => {
-          button.textContent = 'Выйти из полноэкранного';
-        });
-      } else {
-        document.exitFullscreen().then(() => {
-          button.textContent = 'На весь экран';
-        });
+    <script>
+      function toggleFullscreen() {
+        const scene = document.querySelector('a-scene');
+        if (!document.fullscreenElement) {
+          scene.requestFullscreen();
+        } else {
+          document.exitFullscreen();
+        }
       }
-    });
-
-    document.addEventListener('fullscreenchange', () => {
-      if (!document.fullscreenElement) {
-        button.textContent = 'На весь экран';
-      }
-    });
-  </script>
-</body>
+    </script>
+  </body>
 </html>
-
