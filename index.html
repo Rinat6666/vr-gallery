@@ -37,35 +37,35 @@
   <!-- Панорамное изображение -->
   <a-sky src="4.jpg" rotation="0 -90 0"></a-sky>
 
-  <!-- Стрелка 1 -->
-  <a-image
-    src="Strelka.png"
-    position="-6 1.6 -3"
-    scale="0.7 0.7 0.7"
-    look-at="[camera]"
-    class="clickable"
-    onclick="alert('Точка перехода 5 зал')"
-  ></a-image>
+<!-- Стрелка 1 -->
+<a-image
+  src="Strelka.png"
+  position="-6 1.6 -3"
+  scale="0.7 0.7 0.7"
+  look-at="[camera]"
+  class="clickable"
+  onclick="alert('Точка перехода 5 зал')"
+></a-image>
 
-  <!-- Стрелка 2 -->
-  <a-image
-    src="Strelka.png"
-    position="-6.2 1.2 3.4"
-    scale="1.4 1.4 1.4"
-    look-at="[camera]"
-    class="clickable"
-    onclick="alert('Точка перехода уборная')"
-  ></a-image>
+<!-- Стрелка 2 -->
+<a-image
+  src="Strelka.png"
+  position="-6.2 1.2 3.4"
+  scale="1.4 1.4 1.4"
+  look-at="[camera]"
+  class="clickable"
+  onclick="alert('Точка перехода уборная')"
+></a-image>
 
-  <!-- Стрелка 3 -->
-  <a-image
-    src="Strelka.png"
-    position="-2 1.6 -3"
-    scale="0.7 0.7 0.7"
-    look-at="[camera]"
-    class="clickable"
-    onclick="alert('Точка перехода 6 зал')"
-  ></a-image>
+<!-- Стрелка 3 (переход к сцене 6.jpg) -->
+<a-image
+  src="Strelka.png"
+  position="-2 1.6 -3"
+  scale="0.7 0.7 0.7"
+  look-at="[camera]"
+  class="clickable"
+  onclick="document.querySelector('a-sky').setAttribute('src', '6.jpg')"
+></a-image>
 
   <!-- Свет -->
   <a-entity light="type: ambient; color: #fff"></a-entity>
@@ -83,6 +83,7 @@
     </script>
   </body>
 </html>
+
 
 
 
