@@ -8,9 +8,9 @@
     html, body {
       margin: 0;
       height: 100%;
-      background-color: #0033cc;
       overflow: hidden;
-      cursor: default;
+      background-color: #0033cc;
+      cursor: default; /* обычный курсор */
     }
 
     .fullscreen-btn {
@@ -25,27 +25,15 @@
       cursor: pointer;
       font-size: 14px;
     }
-
-    /* Пульсация и увеличение при наведении */
-    .clickable:hover {
-      animation: pulse 1s infinite;
-      transform: scale(1.1);
-      cursor: pointer;
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1.1); opacity: 1; }
-      50% { transform: scale(1.2); opacity: 0.8; }
-      100% { transform: scale(1.1); opacity: 1; }
-    }
   </style>
 </head>
 <body>
   <button class="fullscreen-btn" onclick="toggleFullscreen()">На весь экран</button>
 
   <a-scene embedded style="width: 90vw; height: 90vh; margin: 5vh auto; border: 5px solid red;">
-    <!-- Камера (без VR курсора) -->
-    <a-entity id="camera" camera look-controls="enabled: true" position="0 1.6 0"></a-entity>
+    
+    <!-- Камера без курсора A-Frame -->
+    <a-entity id="camera" camera look-controls position="0 1.6 0"></a-entity>
 
     <!-- Панорама -->
     <a-sky id="sky" rotation="0 -90 0"></a-sky>
@@ -101,10 +89,15 @@
         arrow.setAttribute('position', hotspot.position);
         arrow.setAttribute('scale', '0.7 0.7 0.7');
         arrow.setAttribute('look-at', '#camera');
-        arrow.setAttribute('class', 'clickable');
-        arrow.setAttribute('title', hotspot.label);
 
-        // Обработчик клика
+        // Включаем курсор мыши
+        arrow.setAttribute('cursor', 'rayOrigin: mouse');
+
+        // Наведение / пульсация
+        arrow.setAttribute('animation__mouseenter', 'property: scale; to: 0.9 0.9 0.9; dur: 200; startEvents: mouseenter');
+        arrow.setAttribute('animation__mouseleave', 'property: scale; to: 0.7 0.7 0.7; dur: 200; startEvents: mouseleave');
+
+        // Клик
         arrow.addEventListener('click', () => {
           loadScene(hotspot.to);
         });
@@ -122,7 +115,7 @@
       }
     }
 
-    // Загружаем первую сцену
+    // Запускаем первую сцену
     loadScene(currentScene);
   </script>
 </body>
