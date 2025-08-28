@@ -2,7 +2,7 @@
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
-    <title>VR Tour – Scene 1</title>
+    <title>VR Tour</title>
     <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
     <style>
       html, body {
@@ -30,40 +30,46 @@
     <!-- Кнопка "На весь экран" -->
     <button class="fullscreen-btn" onclick="toggleFullscreen()">На весь экран</button>
 
-   <a-scene embedded style="width: 90vw; height: 90vh; margin: 5vh auto; border: 5px solid red;">
-  <!-- Камера: управление пальцем, гироскоп отключён -->
-  <a-entity camera look-controls="touchEnabled: true; magicWindowTrackingEnabled: false" position="0 1.6 0"></a-entity>
+    <a-scene embedded style="width: 90vw; height: 90vh; margin: 5vh auto; border: 5px solid red;">
+      <!-- Камера -->
+      <a-entity 
+        camera 
+        look-controls="touchEnabled: true; magicWindowTrackingEnabled: false" 
+        position="0 1.6 0">
+      </a-entity>
 
-  <!-- Панорамное изображение -->
-  <a-sky src="4.jpg" rotation="0 -90 0"></a-sky>
+      <!-- Сцена 1 (4.jpg) -->
+      <a-sky id="scene4" src="4.jpg" rotation="0 -90 0" visible="true"></a-sky>
 
-<!-- Стрелки сцены 1 (4.jpg) -->
-<a-entity id="scene-1-arrows">
-  <a-image src="Strelka.png" position="-6 1.6 -3" scale="0.7 0.7 0.7"
-           look-at="[camera]" class="clickable"
-           onclick="alert('Точка перехода 5 зал')"></a-image>
+      <!-- Сцена 2 (6.jpg) -->
+      <a-sky id="scene6" src="6.jpg" rotation="0 -90 0" visible="false"></a-sky>
 
-  <a-image src="Strelka.png" position="-6.2 1.2 3.4" scale="1.4 1.4 1.4"
-           look-at="[camera]" class="clickable"
-           onclick="alert('Точка перехода уборная')"></a-image>
+      <!-- Стрелка для перехода из 4.jpg в 6.jpg -->
+      <a-image
+        id="arrow-to-6"
+        src="Strelka.png"
+        position="-2 1.6 -3"
+        scale="0.7 0.7 0.7"
+        look-at="[camera]"
+        class="clickable"
+        onclick="switchScene('scene6')"
+      ></a-image>
 
-  <!-- Стрелка в сцену 2 -->
-  <a-image src="Strelka.png" position="-2 1.6 -3" scale="0.7 0.7 0.7"
-           look-at="[camera]" class="clickable"
-           onclick="goToScene2()"></a-image>
-</a-entity>
+      <!-- Стрелка для перехода из 6.jpg обратно в 4.jpg -->
+      <a-image
+        id="arrow-to-4"
+        src="Strelka.png"
+        position="1 1.6 -3"
+        scale="0.7 0.7 0.7"
+        look-at="[camera]"
+        class="clickable"
+        onclick="switchScene('scene4')"
+        visible="false"
+      ></a-image>
 
-<!-- Стрелки сцены 2 (6.jpg) -->
-<a-entity id="scene-2-arrows" visible="false">
-  <!-- Стрелка назад в сцену 1 -->
-  <a-image src="Strelka.png" position="2 1.6 -3" scale="0.7 0.7 0.7"
-           look-at="[camera]" class="clickable"
-           onclick="goToScene1()"></a-image>
-</a-entity>
-
-  <!-- Свет -->
-  <a-entity light="type: ambient; color: #fff"></a-entity>
-</a-scene>
+      <!-- Свет -->
+      <a-entity light="type: ambient; color: #fff"></a-entity>
+    </a-scene>
 
     <script>
       function toggleFullscreen() {
@@ -74,12 +80,25 @@
           document.exitFullscreen();
         }
       }
+
+      function switchScene(targetSceneId) {
+        const scenes = ['scene4', 'scene6'];
+        const arrows = ['arrow-to-6', 'arrow-to-4'];
+
+        scenes.forEach(id => {
+          const sky = document.getElementById(id);
+          sky.setAttribute('visible', id === targetSceneId);
+        });
+
+        // Управляем видимостью стрелок
+        if (targetSceneId === 'scene4') {
+          document.getElementById('arrow-to-6').setAttribute('visible', true);
+          document.getElementById('arrow-to-4').setAttribute('visible', false);
+        } else if (targetSceneId === 'scene6') {
+          document.getElementById('arrow-to-6').setAttribute('visible', false);
+          document.getElementById('arrow-to-4').setAttribute('visible', true);
+        }
+      }
     </script>
   </body>
 </html>
-
-
-
-
-
-
