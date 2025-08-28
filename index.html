@@ -10,6 +10,7 @@
       height: 100%;
       background-color: #0033cc;
       overflow: hidden;
+      cursor: default;
     }
 
     .fullscreen-btn {
@@ -25,37 +26,26 @@
       font-size: 14px;
     }
 
-    /* Пульсация стрелок */
-    .pulse {
-      animation: pulse 1.5s infinite;
-      transition: scale 0.2s ease;
+    /* Пульсация и увеличение при наведении */
+    .clickable:hover {
+      animation: pulse 1s infinite;
+      transform: scale(1.1);
+      cursor: pointer;
     }
 
     @keyframes pulse {
-      0% { scale: 1; }
-      50% { scale: 1.2; }
-      100% { scale: 1; }
+      0% { transform: scale(1.1); opacity: 1; }
+      50% { transform: scale(1.2); opacity: 0.8; }
+      100% { transform: scale(1.1); opacity: 1; }
     }
   </style>
 </head>
 <body>
-  <!-- Кнопка полноэкранного режима -->
   <button class="fullscreen-btn" onclick="toggleFullscreen()">На весь экран</button>
 
   <a-scene embedded style="width: 90vw; height: 90vh; margin: 5vh auto; border: 5px solid red;">
-    
-    <!-- Камера с отключенным гироскопом и курсором -->
-    <a-entity id="cameraWrapper">
-      <a-entity id="camera" camera look-controls="touchEnabled: true; magicWindowTrackingEnabled: false" position="0 1.6 0">
-        <a-entity
-          cursor="fuse: false"
-          raycaster="objects: .clickable"
-          position="0 0 -1"
-          geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
-          material="color: white; shader: flat"
-        ></a-entity>
-      </a-entity>
-    </a-entity>
+    <!-- Камера (без VR курсора) -->
+    <a-entity id="camera" camera look-controls="enabled: true" position="0 1.6 0"></a-entity>
 
     <!-- Панорама -->
     <a-sky id="sky" rotation="0 -90 0"></a-sky>
@@ -68,23 +58,24 @@
   </a-scene>
 
   <script>
-    // Сцены и переходы
+    const basePath = 'https://raw.githubusercontent.com/Rinat6666/vr-gallery/main/';
+
     const scenes = {
       'scene4': {
-        image: 'https://raw.githubusercontent.com/Rinat6666/vr-gallery/main/4.jpg',
+        image: basePath + '4.jpg',
         hotspots: [
           { to: 'scene6', position: '-2 1.6 -3', label: 'К залу 6' },
           { to: 'scene5', position: '-6 1.6 -3', label: 'К залу 5' }
         ]
       },
       'scene6': {
-        image: 'https://raw.githubusercontent.com/Rinat6666/vr-gallery/main/6.jpg',
+        image: basePath + '6.jpg',
         hotspots: [
           { to: 'scene4', position: '1 1.6 -3', label: 'Назад к залу 4' }
         ]
       },
       'scene5': {
-        image: 'https://raw.githubusercontent.com/Rinat6666/vr-gallery/main/6.jpg',
+        image: basePath + '5.jpg',
         hotspots: [
           { to: 'scene4', position: '0 1.6 -3', label: 'Назад в зал 4' }
         ]
@@ -92,6 +83,7 @@
     };
 
     let currentScene = 'scene4';
+
     const sky = document.getElementById('sky');
     const hotspotContainer = document.getElementById('hotspots');
 
@@ -105,16 +97,14 @@
 
       scene.hotspots.forEach(hotspot => {
         const arrow = document.createElement('a-image');
-        arrow.setAttribute('src', 'https://raw.githubusercontent.com/Rinat6666/vr-gallery/main/Strelka.png');
+        arrow.setAttribute('src', basePath + 'Strelka.png');
         arrow.setAttribute('position', hotspot.position);
         arrow.setAttribute('scale', '0.7 0.7 0.7');
-        arrow.setAttribute('class', 'clickable pulse');
+        arrow.setAttribute('look-at', '#camera');
+        arrow.setAttribute('class', 'clickable');
+        arrow.setAttribute('title', hotspot.label);
 
-        // С небольшой задержкой, чтобы камера уже была доступна
-        setTimeout(() => {
-          arrow.setAttribute('look-at', '#camera');
-        }, 100);
-
+        // Обработчик клика
         arrow.addEventListener('click', () => {
           loadScene(hotspot.to);
         });
@@ -132,7 +122,7 @@
       }
     }
 
-    // Загружаем начальную сцену
+    // Загружаем первую сцену
     loadScene(currentScene);
   </script>
 </body>
