@@ -8,9 +8,8 @@
     html, body {
       margin: 0;
       height: 100%;
-      overflow: hidden;
       background-color: #0033cc;
-      cursor: default; /* обычный курсор */
+      overflow: hidden;
     }
 
     .fullscreen-btn {
@@ -25,15 +24,28 @@
       cursor: pointer;
       font-size: 14px;
     }
+
+    /* Пульсация стрелок */
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
   </style>
 </head>
 <body>
   <button class="fullscreen-btn" onclick="toggleFullscreen()">На весь экран</button>
 
   <a-scene embedded style="width: 90vw; height: 90vh; margin: 5vh auto; border: 5px solid red;">
-    
-    <!-- Камера без курсора A-Frame -->
-    <a-entity id="camera" camera look-controls position="0 1.6 0"></a-entity>
+    <!-- Камера с курсором-стрелкой -->
+    <a-entity id="camera" camera look-controls="touchEnabled: true; magicWindowTrackingEnabled: false" position="0 1.6 0">
+      <a-entity 
+        cursor="fuse: false; rayOrigin: mouse" 
+        raycaster="objects: .clickable" 
+        position="0 0 -1" 
+        geometry="primitive: ring; radiusInner: 0.015; radiusOuter: 0.025" 
+        material="color: white; shader: flat">
+      </a-entity>
+    </a-entity>
 
     <!-- Панорама -->
     <a-sky id="sky" rotation="0 -90 0"></a-sky>
@@ -46,8 +58,7 @@
   </a-scene>
 
   <script>
-    const basePath = 'https://raw.githubusercontent.com/Rinat6666/vr-gallery/main/';
-
+    const basePath = './';  // путь к файлам (если надо, можно заменить на абсолютный)
     const scenes = {
       'scene4': {
         image: basePath + '4.jpg',
@@ -81,6 +92,8 @@
 
       currentScene = sceneId;
       sky.setAttribute('src', scene.image);
+
+      // Удаляем старые стрелки
       hotspotContainer.innerHTML = '';
 
       scene.hotspots.forEach(hotspot => {
@@ -89,15 +102,24 @@
         arrow.setAttribute('position', hotspot.position);
         arrow.setAttribute('scale', '0.7 0.7 0.7');
         arrow.setAttribute('look-at', '#camera');
+        arrow.setAttribute('class', 'clickable');
+        arrow.setAttribute('title', hotspot.label);
 
-        // Включаем курсор мыши
-        arrow.setAttribute('cursor', 'rayOrigin: mouse');
+        // Важно: чтобы клики срабатывали только по непрозрачным пикселям
+        arrow.setAttribute('transparent', 'true');
+        arrow.setAttribute('material', 'alphaTest: 0.5');
 
-        // Наведение / пульсация
-        arrow.setAttribute('animation__mouseenter', 'property: scale; to: 0.9 0.9 0.9; dur: 200; startEvents: mouseenter');
-        arrow.setAttribute('animation__mouseleave', 'property: scale; to: 0.7 0.7 0.7; dur: 200; startEvents: mouseleave');
+        // Добавляем эффекты наведения: пульсация и масштабирование
+        arrow.addEventListener('mouseenter', () => {
+          arrow.style.animation = 'pulse 1s infinite';
+          arrow.setAttribute('scale', '0.9 0.9 0.9');
+        });
+        arrow.addEventListener('mouseleave', () => {
+          arrow.style.animation = '';
+          arrow.setAttribute('scale', '0.7 0.7 0.7');
+        });
 
-        // Клик
+        // Клик по стрелке меняет сцену
         arrow.addEventListener('click', () => {
           loadScene(hotspot.to);
         });
@@ -115,7 +137,7 @@
       }
     }
 
-    // Запускаем первую сцену
+    // Загружаем первую сцену
     loadScene(currentScene);
   </script>
 </body>
