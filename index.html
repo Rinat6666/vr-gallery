@@ -37,35 +37,29 @@
   <!-- Панорамное изображение -->
   <a-sky src="4.jpg" rotation="0 -90 0"></a-sky>
 
-<!-- Стрелка 1 -->
-<a-image
-  src="Strelka.png"
-  position="-6 1.6 -3"
-  scale="0.7 0.7 0.7"
-  look-at="[camera]"
-  class="clickable"
-  onclick="alert('Точка перехода 5 зал')"
-></a-image>
+<!-- Стрелки сцены 1 (4.jpg) -->
+<a-entity id="scene-1-arrows">
+  <a-image src="Strelka.png" position="-6 1.6 -3" scale="0.7 0.7 0.7"
+           look-at="[camera]" class="clickable"
+           onclick="alert('Точка перехода 5 зал')"></a-image>
 
-<!-- Стрелка 2 -->
-<a-image
-  src="Strelka.png"
-  position="-6.2 1.2 3.4"
-  scale="1.4 1.4 1.4"
-  look-at="[camera]"
-  class="clickable"
-  onclick="alert('Точка перехода уборная')"
-></a-image>
+  <a-image src="Strelka.png" position="-6.2 1.2 3.4" scale="1.4 1.4 1.4"
+           look-at="[camera]" class="clickable"
+           onclick="alert('Точка перехода уборная')"></a-image>
 
-<!-- Стрелка 3 (переход к сцене 6.jpg) -->
-<a-image
-  src="Strelka.png"
-  position="-2 1.6 -3"
-  scale="0.7 0.7 0.7"
-  look-at="[camera]"
-  class="clickable"
-  onclick="document.querySelector('a-sky').setAttribute('src', '6.jpg')"
-></a-image>
+  <!-- Стрелка в сцену 2 -->
+  <a-image src="Strelka.png" position="-2 1.6 -3" scale="0.7 0.7 0.7"
+           look-at="[camera]" class="clickable"
+           onclick="goToScene2()"></a-image>
+</a-entity>
+
+<!-- Стрелки сцены 2 (6.jpg) -->
+<a-entity id="scene-2-arrows" visible="false">
+  <!-- Стрелка назад в сцену 1 -->
+  <a-image src="Strelka.png" position="2 1.6 -3" scale="0.7 0.7 0.7"
+           look-at="[camera]" class="clickable"
+           onclick="goToScene1()"></a-image>
+</a-entity>
 
   <!-- Свет -->
   <a-entity light="type: ambient; color: #fff"></a-entity>
@@ -83,6 +77,7 @@
     </script>
   </body>
 </html>
+
 
 
 
