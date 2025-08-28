@@ -35,9 +35,9 @@
       <a-entity camera look-controls position="0 1.6 0"></a-entity>
 
       <!-- Панорамное изображение -->
-      <a-sky src="4.jpg" rotation="0 -90 0"></a-sky>
+      <a-sky src="1.jpeg" rotation="0 -90 0"></a-sky>
 
-      <!-- Стрелка 1 (замена красному кругу) -->
+      <!-- Стрелка 1 (по центру) -->
       <a-image
         src="Strelka.png"
         position="2 1.6 -3"
@@ -47,10 +47,10 @@
         onclick="alert('Точка перехода или инфо 1')"
       ></a-image>
 
-      <!-- Стрелка 2 -->
+      <!-- Стрелка 2 (перемещена на дверь слева от прохода) -->
       <a-image
         src="Strelka.png"
-        position="0 1.6 3"
+        position="-1.2 1.6 2.4"
         scale="0.7 0.7 0.7"
         look-at="[camera]"
         class="clickable"
@@ -83,4 +83,3 @@
     </script>
   </body>
 </html>
-
