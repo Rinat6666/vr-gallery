@@ -1,104 +1,114 @@
 <!DOCTYPE html>
 <html lang="ru">
-  <head>
-    <meta charset="UTF-8" />
-    <title>VR Tour</title>
-    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-    <style>
-      html, body {
-        margin: 0;
-        height: 100%;
-        background-color: #0033cc; /* синий фон */
-        overflow: hidden;
+<head>
+  <meta charset="UTF-8" />
+  <title>VR Тур</title>
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <style>
+    html, body {
+      margin: 0;
+      height: 100%;
+      background-color: #0033cc;
+      overflow: hidden;
+    }
+
+    .fullscreen-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 999;
+      padding: 8px 14px;
+      background: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <button class="fullscreen-btn" onclick="toggleFullscreen()">На весь экран</button>
+
+  <a-scene embedded style="width: 90vw; height: 90vh; margin: 5vh auto; border: 5px solid red;">
+    <!-- Камера -->
+    <a-entity id="camera" camera look-controls="touchEnabled: true; magicWindowTrackingEnabled: false" position="0 1.6 0"></a-entity>
+
+    <!-- Панорамы -->
+    <a-sky id="sky" rotation="0 -90 0"></a-sky>
+
+    <!-- Контейнер для стрелок -->
+    <a-entity id="hotspots"></a-entity>
+
+    <!-- Свет -->
+    <a-entity light="type: ambient; color: #fff"></a-entity>
+  </a-scene>
+
+  <script>
+    const scenes = {
+      'scene4': {
+        image: '4.jpg',
+        hotspots: [
+          { to: 'scene6', position: '-2 1.6 -3', label: 'К залу 6' },
+          { to: 'scene5', position: '-6 1.6 -3', label: 'К залу 5' }
+        ]
+      },
+      'scene6': {
+        image: '6.jpg',
+        hotspots: [
+          { to: 'scene4', position: '1 1.6 -3', label: 'Назад к залу 4' }
+        ]
+      },
+      'scene5': {
+        image: '5.jpg',
+        hotspots: [
+          { to: 'scene4', position: '0 1.6 -3', label: 'Назад в зал 4' }
+        ]
       }
+    };
 
-      .fullscreen-btn {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        z-index: 999;
-        padding: 8px 14px;
-        background: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 14px;
-      }
-    </style>
-  </head>
-  <body>
-    <!-- Кнопка "На весь экран" -->
-    <button class="fullscreen-btn" onclick="toggleFullscreen()">На весь экран</button>
+    let currentScene = 'scene4';
 
-    <a-scene embedded style="width: 90vw; height: 90vh; margin: 5vh auto; border: 5px solid red;">
-      <!-- Камера -->
-      <a-entity 
-        camera 
-        look-controls="touchEnabled: true; magicWindowTrackingEnabled: false" 
-        position="0 1.6 0">
-      </a-entity>
+    const sky = document.getElementById('sky');
+    const hotspotContainer = document.getElementById('hotspots');
 
-      <!-- Сцена 1 (4.jpg) -->
-      <a-sky id="scene4" src="4.jpg" rotation="0 -90 0" visible="true"></a-sky>
+    function loadScene(sceneId) {
+      const scene = scenes[sceneId];
+      if (!scene) return;
 
-      <!-- Сцена 2 (6.jpg) -->
-      <a-sky id="scene6" src="6.jpg" rotation="0 -90 0" visible="false"></a-sky>
+      currentScene = sceneId;
+      sky.setAttribute('src', scene.image);
 
-      <!-- Стрелка для перехода из 4.jpg в 6.jpg -->
-      <a-image
-        id="arrow-to-6"
-        src="Strelka.png"
-        position="-2 1.6 -3"
-        scale="0.7 0.7 0.7"
-        look-at="[camera]"
-        class="clickable"
-        onclick="switchScene('scene6')"
-      ></a-image>
+      // Удаляем старые стрелки
+      hotspotContainer.innerHTML = '';
 
-      <!-- Стрелка для перехода из 6.jpg обратно в 4.jpg -->
-      <a-image
-        id="arrow-to-4"
-        src="Strelka.png"
-        position="1 1.6 -3"
-        scale="0.7 0.7 0.7"
-        look-at="[camera]"
-        class="clickable"
-        onclick="switchScene('scene4')"
-        visible="false"
-      ></a-image>
+      scene.hotspots.forEach(hotspot => {
+        const arrow = document.createElement('a-image');
+        arrow.setAttribute('src', 'Strelka.png');
+        arrow.setAttribute('position', hotspot.position);
+        arrow.setAttribute('scale', '0.7 0.7 0.7');
+        arrow.setAttribute('look-at', '#camera');
+        arrow.setAttribute('class', 'clickable');
+        arrow.setAttribute('title', hotspot.label);
 
-      <!-- Свет -->
-      <a-entity light="type: ambient; color: #fff"></a-entity>
-    </a-scene>
-
-    <script>
-      function toggleFullscreen() {
-        const scene = document.querySelector('a-scene');
-        if (!document.fullscreenElement) {
-          scene.requestFullscreen();
-        } else {
-          document.exitFullscreen();
-        }
-      }
-
-      function switchScene(targetSceneId) {
-        const scenes = ['scene4', 'scene6'];
-        const arrows = ['arrow-to-6', 'arrow-to-4'];
-
-        scenes.forEach(id => {
-          const sky = document.getElementById(id);
-          sky.setAttribute('visible', id === targetSceneId);
+        arrow.addEventListener('click', () => {
+          loadScene(hotspot.to);
         });
 
-        // Управляем видимостью стрелок
-        if (targetSceneId === 'scene4') {
-          document.getElementById('arrow-to-6').setAttribute('visible', true);
-          document.getElementById('arrow-to-4').setAttribute('visible', false);
-        } else if (targetSceneId === 'scene6') {
-          document.getElementById('arrow-to-6').setAttribute('visible', false);
-          document.getElementById('arrow-to-4').setAttribute('visible', true);
-        }
+        hotspotContainer.appendChild(arrow);
+      });
+    }
+
+    function toggleFullscreen() {
+      const scene = document.querySelector('a-scene');
+      if (!document.fullscreenElement) {
+        scene.requestFullscreen();
+      } else {
+        document.exitFullscreen();
       }
-    </script>
-  </body>
+    }
+
+    // Загружаем первую сцену
+    loadScene(currentScene);
+  </script>
+</body>
 </html>
